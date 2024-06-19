@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Sidebar from "./components/Sidebar";
+import NoProjects from "./components/NoProjects";
+import Project from "./components/Project";
+import { useState } from "react";
+import CreateNewProject from "./components/CreateNewProject";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [projectsList, setProjectsList] = useState({}); // Check if any projects exist yet
+
+  const [selectedProj, setSelectedProj] = useState(1);
+
+  const [createNewOpen, setCreateNewOpen] = useState(false); // Check if creating a new project
+
+  const hasProjects = Object.keys(projectsList).length > 0;
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="flex h-screen">
+        <Sidebar
+          projectsList={projectsList}
+          setProjectsList={setProjectsList}
+          setSelectedProj={setSelectedProj}
+          selectedProj={selectedProj}
+          setCreateNewOpen={setCreateNewOpen}
+        />
+        {createNewOpen && (
+          <CreateNewProject
+            setProjectsList={setProjectsList}
+            setCreateNewOpen={setCreateNewOpen}
+            projectsList={projectsList}
+            setSelectedProj={setSelectedProj}
+          />
+        )}
+        {!hasProjects && !createNewOpen && (
+          <NoProjects setCreateNewOpen={setCreateNewOpen} />
+        )}
+        {hasProjects && selectedProj !== null && !createNewOpen && (
+          <Project
+            projectsList={projectsList}
+            selectedProj={selectedProj}
+            setProjectsList={setProjectsList}
+          />
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
